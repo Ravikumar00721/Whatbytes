@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../../auth/presentation/provider/auth_provider.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/usecases/delete_task.dart';
 import '../../domain/usecases/update_task.dart';
@@ -43,7 +43,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => context.go("/login"),
+            onPressed: () async {
+              await ref.read(authRepositoryProvider).signOut();
+            },
           ),
         ],
       ),
@@ -67,11 +69,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ref.read(searchQueryProvider.notifier).state = '';
                         },
                       ),
-                    IconButton(
-                      icon: const Icon(Icons.filter_alt_off),
-                      onPressed: _clearAllFilters,
-                      tooltip: 'Clear all filters',
-                    ),
                   ],
                 ),
                 border: OutlineInputBorder(

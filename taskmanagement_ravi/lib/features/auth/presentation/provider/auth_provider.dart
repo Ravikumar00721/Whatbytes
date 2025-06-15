@@ -27,9 +27,10 @@ final registerUserUseCaseProvider = Provider<RegisterUser>((ref) {
   return RegisterUser(repo);
 });
 
-final authStateProvider = StreamProvider<UserEntity?>((ref) {
+final authStateProvider = StreamProvider<UserEntity?>((ref) async* {
   final auth = FirebaseAuth.instance;
-  return auth.authStateChanges().asyncMap((user) async {
+  await Future.delayed(const Duration(seconds: 2));
+  yield* auth.authStateChanges().asyncMap((user) async {
     if (user != null) {
       final dataSource = ref.read(authDataSourceProvider);
       return await dataSource.getCurrentUser();

@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -23,6 +21,7 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
+    print("Come");
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -38,11 +37,6 @@ class _SplashScreenState extends State<SplashScreen>
         _opacity = 1.0;
         _scale = 1.0;
       });
-    });
-
-    Timer(const Duration(seconds: 3), () {
-      final user = FirebaseAuth.instance.currentUser;
-      context.go(user != null ? '/home' : '/login');
     });
   }
 

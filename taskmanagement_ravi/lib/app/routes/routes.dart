@@ -6,14 +6,18 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/tasks/presentation/screens/home_screen.dart';
 import '../../features/tasks/presentation/screens/splash.dart';
+import 'custom_router.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
+  final authStateStream = ref.watch(authStateProvider.stream);
+  final refresh = GoRouterRefreshStream(authStateStream);
+
   return GoRouter(
     initialLocation: '/splash',
     debugLogDiagnostics: true,
+    refreshListenable: refresh,
     redirect: (context, state) {
       final isSplash = state.matchedLocation == '/splash';
-
       final authState = ref.read(authStateProvider);
 
       return authState.when(
@@ -31,35 +35,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             return isLoggingIn || isSigningUp ? '/home' : null;
           }
         },
-        loading: () {
-          return isSplash ? null : '/splash';
-        },
-        error: (error, stackTrace) {
-          return '/login';
-        },
+        loading: () => isSplash ? null : '/splash',
+        error: (_, __) => '/login',
       );
     },
     routes: [
-      GoRoute(
-        path: '/splash',
-        name: 'splash',
-        builder: (context, state) => const SplashScreen(),
-      ),
-      GoRoute(
-        path: '/login',
-        name: 'login',
-        builder: (context, state) => const LoginScreen(),
-      ),
-      GoRoute(
-        path: '/signup',
-        name: 'signup',
-        builder: (context, state) => const SignUpScreen(),
-      ),
-      GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (context, state) => const HomeScreen(),
-      ),
+      GoRoute(path: '/splash', builder: (context, _) => const SplashScreen()),
+      GoRoute(path: '/login', builder: (context, _) => const LoginScreen()),
+      GoRoute(path: '/signup', builder: (context, _) => const SignUpScreen()),
+      GoRoute(path: '/home', builder: (context, _) => const HomeScreen()),
     ],
   );
 });
